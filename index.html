@@ -1,891 +1,194 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#173d2b">
-  <title>Penilaian A1 - LT II Regol 2026</title>
-
-  <style>
-    :root {
-      --green: #173d2b;
-      --green-light: #e0f1e5;
-      --bg: #f2f5f2;
-      --border: #d5ddd5;
-      --text: #202820;
-      --muted: #657166;
-      --gold: #d99b19;
-      --red: #b42318;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    header {
-      background: var(--green);
-      color: white;
-      padding: 14px 16px;
-    }
-
-    header h1 {
-      margin: 0 0 4px;
-      font-size: 20px;
-    }
-
-    header p {
-      margin: 0;
-      font-size: 12px;
-      opacity: .85;
-    }
-
-    main {
-      max-width: 560px;
-      margin: auto;
-      padding: 10px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 9px;
-      box-shadow: 0 2px 7px #0000000a;
-    }
-
-    label, .section-title {
-      display: block;
-      font-size: 14px;
-      font-weight: bold;
-      margin-bottom: 7px;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      min-height: 44px;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      font-size: 16px;
-      background: white;
-      color: var(--text);
-    }
-
-    input:focus {
-      outline: 2px solid var(--green-light);
-      border-color: var(--green);
-    }
-
-    .regu-row {
-      display: flex;
-      align-items: end;
-      gap: 8px;
-    }
-
-    .regu-field {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .clear-form {
-      min-height: 44px;
-      flex-shrink: 0;
-      padding: 0 11px;
-      border: 1px solid #f0b8b4;
-      border-radius: 9px;
-      background: #fff1f0;
-      color: var(--red);
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-
-    .clear-form:active {
-      background: #ffe0de;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 9px;
-    }
-
-    .section-title small {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: normal;
-    }
-
-    .score {
-      color: var(--green);
-      font-size: 13px;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .violation-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 7px;
-    }
-
-    .violation {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 9px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      cursor: pointer;
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    .violation input,
-    .equipment-item input {
-      width: 21px;
-      height: 21px;
-      flex-shrink: 0;
-      accent-color: var(--green);
-    }
-
-    .deduction {
-      margin-left: auto;
-      color: var(--red);
-      font-size: 12px;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .equipment-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 4px;
-    }
-
-    .equipment-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 5px 4px;
-      min-height: 34px;
-      border-bottom: 1px solid #edf0ed;
-      font-size: 13px;
-      line-height: 1.3;
-      cursor: pointer;
-    }
-
-    .equipment-item input {
-      width: 19px;
-      height: 19px;
-    }
-
-    .rating-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      align-items: center;
-      margin: 9px 0;
-    }
-
-    .rating-name {
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .stars {
-      display: flex;
-      gap: 2px;
-      align-items: center;
-    }
-
-    .star {
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: white;
-      color: #a6ada6;
-      min-width: 30px;
-      min-height: 35px;
-      padding: 2px;
-      font-size: 19px;
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-
-    .star.selected {
-      background: #fff6df;
-      border-color: var(--gold);
-      color: var(--gold);
-    }
-
-    .star.zero {
-      font-size: 11px;
-      font-weight: bold;
-      color: var(--text);
-    }
-
-    .star.zero.selected {
-      background: var(--green);
-      border-color: var(--green);
-      color: white;
-    }
-
-    .total-card {
-      background: var(--green);
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      position: sticky;
-      bottom: 5px;
-      z-index: 5;
-      box-shadow: 0 3px 12px #0003;
-    }
-
-    .total-number {
-      font-size: 30px;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .total-detail {
-      font-size: 11px;
-      opacity: .9;
-      line-height: 1.5;
-    }
-
-    .submit {
-      width: 100%;
-      min-height: 52px;
-      border: 0;
-      border-radius: 10px;
-      background: var(--green);
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-
-    .submit:disabled {
-      opacity: .6;
-      cursor: wait;
-    }
-
-    #status {
-      padding: 10px;
-      border-radius: 8px;
-      background: #f5f7f5;
-      font-size: 12px;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-
-    .hint {
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.45;
-    }
-
-    footer {
-      padding: 5px 12px 18px;
-      text-align: center;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    @media (min-width: 440px) {
-      .violation-list {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .equipment-list {
-        grid-template-columns: 1fr 1fr;
-        column-gap: 12px;
-      }
-    }
-
-    @media (max-width: 360px) {
-      main { padding: 6px; }
-      .card { padding: 9px; }
-      .star { min-width: 26px; min-height: 33px; font-size: 17px; }
-      .rating-row { grid-template-columns: 1fr; gap: 5px; }
-      .stars { justify-content: flex-start; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#173d2b">
+<title>Penilaian LT II Regol 2026</title>
+<style>
+:root{--g:#173d2b;--gl:#e0f1e5;--bg:#f2f5f2;--b:#d5ddd5;--t:#202820;--m:#657166;--gold:#d99b19;--red:#b42318;--blue:#164e8a}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--t)}
+header{background:var(--g);color:white;padding:15px 16px}h1{margin:0 0 4px;font-size:20px}header p{margin:0;font-size:12px;opacity:.9}
+main{max-width:640px;margin:auto;padding:10px}.card{background:white;border-radius:12px;padding:13px;margin-bottom:10px;box-shadow:0 2px 7px #0000000a}
+.title{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:14px;font-weight:bold;margin-bottom:9px}.score{color:var(--g);font-size:13px;white-space:nowrap}
+label{font-size:13px}input[type=text],select,input[type=number]{width:100%;min-height:44px;padding:10px;border:1px solid var(--b);border-radius:9px;font-size:16px;background:white;color:var(--t)}
+.hint{font-size:11px;line-height:1.5;color:var(--m)}.list{display:grid;grid-template-columns:1fr;gap:3px}
+.item{display:flex;gap:9px;align-items:flex-start;padding:9px 4px;border-bottom:1px solid #edf0ed;line-height:1.35}.item input{width:21px;height:21px;flex-shrink:0;accent-color:var(--g);margin:0}.item span{flex:1}.deduct{color:var(--red);font-weight:bold;white-space:nowrap}
+.btn{width:100%;min-height:45px;border:1px solid var(--b);border-radius:9px;background:white;color:var(--g);font-weight:bold;font-size:14px;cursor:pointer;padding:10px}.btn.primary{background:var(--g);color:white;border-color:var(--g)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.pill{display:inline-block;background:var(--gl);color:var(--g);padding:4px 8px;border-radius:999px;font-size:11px}
+.total{background:var(--g);color:white;display:flex;justify-content:space-between;align-items:center;gap:10px;position:sticky;bottom:5px;box-shadow:0 3px 12px #0003;z-index:2}
+.big{font-size:27px;font-weight:bold;white-space:nowrap}.small{font-size:11px;line-height:1.5;opacity:.9}
+.rating{display:flex;gap:5px;flex-wrap:wrap}.star{min-width:35px;min-height:36px;border:1px solid var(--b);border-radius:7px;background:white;color:#687268;font-weight:bold;cursor:pointer}.star.sel{background:#fff2cf;border-color:var(--gold);color:#805b00}
+.scoreInput{display:flex;gap:10px;align-items:center}.scoreInput input{max-width:110px}.scoreInput input[type=range]{flex:1;max-width:none;accent-color:var(--g)}
+.notice{background:#fff8e6;border:1px solid #f0dca6;color:#624b13;padding:10px;border-radius:8px;font-size:12px;line-height:1.5}
+.status{display:none;padding:11px;border-radius:9px;font-size:13px;line-height:1.5;margin-bottom:10px}.status.show{display:block}.status.ok{background:#e7f5eb;border:1px solid #b8dfc3;color:#205b32}.status.err{background:#fdebea;border:1px solid #f2c3bf;color:#8b2019}
+.actions{display:grid;grid-template-columns:1fr;gap:8px}
+@media(min-width:440px){.list{grid-template-columns:1fr 1fr}.actions{grid-template-columns:1fr 1fr}}
+</style>
+<script src="./penilaian.js"></script>
 </head>
-
 <body>
-  <header>
-    <h1>Penilaian LT II — A1</h1>
-    <p>Regol 2026 · Pemeriksaan Perlengkapan</p>
-  </header>
-
-  <main>
-    <form id="penilaianForm">
-
-      <!-- IDENTITAS -->
-      <section class="card">
-        <div class="regu-row">
-          <div class="regu-field">
-            <label for="regu">Nama regu</label>
-            <input
-              id="regu"
-              type="text"
-              placeholder="Contoh: Singa"
-              autocomplete="off"
-              required
-            >
-          </div>
-          <button class="clear-form" id="bersihkanForm" type="button">
-            Bersihkan form
-          </button>
-        </div>
-        <input type="hidden" id="lomba" value="A1">
-      </section>
-
-      <!-- KETEPATAN -->
-      <section class="card">
-        <div class="section-title">
-          <span>1. Ketepatan / Kepatuhan SOP</span>
-          <span class="score"><span id="nilaiKetepatan">25</span>/25</span>
-        </div>
-
-        <p class="hint">
-          Nilai awal 25 poin. Centang pelanggaran yang ditemukan.
-          Jangan menghitung pelanggaran yang sama dua kali.
-        </p>
-
-        <div class="violation-list" id="daftarPelanggaran"></div>
-        <p class="hint" id="ringkasanPelanggaran">Tidak ada pelanggaran.</p>
-      </section>
-
-      <!-- KELENGKAPAN -->
-      <section class="card">
-        <div class="section-title">
-          <span>2. Kelengkapan</span>
-          <span class="score"><span id="nilaiKelengkapan">0,00</span>/25</span>
-        </div>
-
-        <p class="hint">
-          Centang barang yang tersedia dan memenuhi ketentuan.
-          Barang dalam satu paket harus lengkap agar mendapat poin.
-        </p>
-
-        <div class="equipment-list" id="daftarPerlengkapan"></div>
-
-        <p class="hint">
-          <span id="jumlahPerlengkapan">0</span> dari 18 jenis perlengkapan tersedia.
-        </p>
-      </section>
-
-      <!-- KERAPIAN -->
-      <section class="card">
-        <div class="section-title">
-          <span>3. Kerapian</span>
-          <span class="score"><span id="nilaiKerapian">0</span>/25</span>
-        </div>
-        <div class="stars" id="bintangKerapian"></div>
-        <p class="hint">1–5 bintang. Setiap bintang bernilai 5 poin.</p>
-      </section>
-
-      <!-- KARAKTER -->
-      <section class="card">
-        <div class="section-title">
-          <span>4. Karakter / Bonus</span>
-          <small>Maksimal 25 poin</small>
-        </div>
-
-        <div id="ratingKarakter"></div>
-        <p class="hint">
-          Sikap maksimal 5 poin. Kompak dan Kebersihan masing-masing
-          maksimal 10 poin.
-        </p>
-      </section>
-
-      <!-- TOTAL -->
-      <section class="card total-card">
-        <div>
-          <strong>Nilai akhir</strong>
-          <div class="total-detail">
-            Ketepatan + Kelengkapan + Kerapian<br>
-            + Sikap + Kompak + Kebersihan
-          </div>
-        </div>
-        <div class="total-number">
-          <span id="nilaiAkhir">0,00</span><small style="font-size:13px">/100</small>
-        </div>
-      </section>
-
-      <!-- KIRIM -->
-      <section class="card">
-        <button class="submit" id="simpan" type="submit">
-          Kirim Data Penilaian
-        </button>
-        <p id="status" role="status" aria-live="polite">
-          Isi nama regu dan seluruh kriteria sebelum mengirim.
-        </p>
-        <p class="hint">
-          Pengiriman perlu diverifikasi melalui Respons Google Forms.
-          Setiap revisi akan tercatat sebagai respons baru.
-        </p>
-      </section>
-    </form>
-  </main>
-
-  <footer>Prototipe LT II Regol 2026</footer>
-
-  <script>
-    // ==========================================
-    // KONFIGURASI GOOGLE FORMS
-    // ==========================================
-
-    const GOOGLE_FORM_URL =
-      "https://docs.google.com/forms/d/e/1FAIpQLSe1qSFeu5SvMp6JdAMDk66kyAQmJtwdHMnywVaml42oQMkPBw/formResponse";
-
-    const ENTRY = {
-      lomba: "entry.511078072",
-      regu: "entry.1652413056",
-      ketepatan: "entry.1102203745",
-      kelengkapan: "entry.308553817",
-      kerapian: "entry.473179287",
-      sikap: "entry.646836897",
-      kompak: "entry.1748328363",
-      bersih: "entry.1374223098"
-    };
-
-    // ==========================================
-    // DAFTAR PERLENGKAPAN A1
-    // ==========================================
-
-    const PERLENGKAPAN = [
-      "Tas",
-      "Seragam Pramuka lengkap",
-      "Pakaian olahraga atau pakaian kegiatan",
-      "Pakaian ganti dan pakaian tidur",
-      "Pakaian dalam",
-      "Jaket atau pakaian hangat",
-      "Sepatu dan sandal",
-      "Jas hujan atau ponco",
-      "Alat ibadah",
-      "Alat mandi dan handuk",
-      "Obat-obatan pribadi",
-      "Alat tulis dan buku saku Pramuka",
-      "Alat tidur (matras dan selimut atau sleeping bag)",
-      "Alat makan",
-      "Botol minum",
-      "Bekal makanan sesuai ketentuan panitia",
-      "Senter",
-      "Kantong pakaian kotor dan kantong sampah"
-    ];
-
-    // ==========================================
-    // PELANGGARAN DAN PENGURANGAN NILAI
-    // Nilai ini adalah usulan simulasi.
-    // Sesuaikan dengan SOP resmi panitia.
-    // ==========================================
-
-    const PELANGGARAN = [
-      { id: "berbahaya", label: "Membawa barang berbahaya", potong: 10 },
-      { id: "terlarang", label: "Membawa barang yang dilarang panitia", potong: 5 },
-      { id: "elektronik", label: "Membawa elektronik tanpa izin", potong: 3 },
-      { id: "bekal", label: "Bekal tidak sesuai ketentuan", potong: 3 },
-      { id: "berlebihan", label: "Barang berlebihan/tidak diperlukan", potong: 2 }
-    ];
-
-    const nilai = {
-      ketepatan: 25,
-      kelengkapan: 0,
-      kerapian: null,
-      sikap: null,
-      kompak: null,
-      bersih: null
-    };
-
-    const pelanggaranDipilih = new Set();
-    const perlengkapanDipilih = new Set();
-
-    const form = document.getElementById("penilaianForm");
-    const tombolKirim = document.getElementById("simpan");
-    const tombolBersihkan = document.getElementById("bersihkanForm");
-    const inputRegu = document.getElementById("regu");
-    const status = document.getElementById("status");
-
-    // ==========================================
-    // FORMAT ANGKA
-    // ==========================================
-
-    function formatAngka(angka) {
-      return angka.toLocaleString("id-ID", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2
-      });
-    }
-
-    // ==========================================
-    // BANGUN DAFTAR PELANGGARAN
-    // ==========================================
-
-    const daftarPelanggaran =
-      document.getElementById("daftarPelanggaran");
-
-    PELANGGARAN.forEach(item => {
-      const label = document.createElement("label");
-      label.className = "violation";
-
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.value = item.id;
-
-      const teks = document.createElement("span");
-      teks.textContent = item.label;
-
-      const potong = document.createElement("span");
-      potong.className = "deduction";
-      potong.textContent = `−${item.potong}`;
-
-      checkbox.addEventListener("change", () => {
-        if (checkbox.checked) {
-          pelanggaranDipilih.add(item.id);
-        } else {
-          pelanggaranDipilih.delete(item.id);
-        }
-
-        hitungKetepatan();
-      });
-
-      label.append(checkbox, teks, potong);
-      daftarPelanggaran.appendChild(label);
-    });
-
-    function hitungKetepatan() {
-      const totalPotongan = PELANGGARAN
-        .filter(item => pelanggaranDipilih.has(item.id))
-        .reduce((sum, item) => sum + item.potong, 0);
-
-      nilai.ketepatan = Math.max(0, 25 - totalPotongan);
-
-      document.getElementById("nilaiKetepatan").textContent =
-        formatAngka(nilai.ketepatan);
-
-      const jumlah = pelanggaranDipilih.size;
-      document.getElementById("ringkasanPelanggaran").textContent =
-        jumlah === 0
-          ? "Tidak ada pelanggaran. Nilai ketepatan penuh."
-          : `${jumlah} temuan · Total pengurangan ${totalPotongan} poin.`;
-
-      hitungTotal();
-    }
-
-    // ==========================================
-    // BANGUN CHECKLIST PERLENGKAPAN
-    // ==========================================
-
-    const daftarPerlengkapan =
-      document.getElementById("daftarPerlengkapan");
-
-    PERLENGKAPAN.forEach((item, index) => {
-      const label = document.createElement("label");
-      label.className = "equipment-item";
-
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.value = String(index);
-
-      const teks = document.createElement("span");
-      teks.textContent = `${index + 1}. ${item}`;
-
-      checkbox.addEventListener("change", () => {
-        if (checkbox.checked) {
-          perlengkapanDipilih.add(index);
-        } else {
-          perlengkapanDipilih.delete(index);
-        }
-
-        hitungKelengkapan();
-      });
-
-      label.append(checkbox, teks);
-      daftarPerlengkapan.appendChild(label);
-    });
-
-    function hitungKelengkapan() {
-      const jumlah = perlengkapanDipilih.size;
-
-      nilai.kelengkapan = (jumlah / PERLENGKAPAN.length) * 25;
-
-      document.getElementById("nilaiKelengkapan").textContent =
-        nilai.kelengkapan.toLocaleString("id-ID", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
-
-      document.getElementById("jumlahPerlengkapan").textContent =
-        jumlah;
-
-      hitungTotal();
-    }
-
-    // ==========================================
-    // BANGUN RATING BINTANG
-    // ==========================================
-
-    function buatRating(id, label, maksimal, target, nilaiPerBintang) {
-      const row = document.createElement("div");
-      row.className = "rating-row";
-
-      const name = document.createElement("span");
-      name.className = "rating-name";
-      name.textContent = label;
-
-      const right = document.createElement("div");
-      right.style.display = "flex";
-      right.style.alignItems = "center";
-      right.style.gap = "6px";
-
-      const stars = document.createElement("div");
-      stars.className = "stars";
-
-      const score = document.createElement("span");
-      score.className = "score";
-      score.style.minWidth = "38px";
-      score.style.textAlign = "right";
-      score.textContent = `—/${maksimal * nilaiPerBintang}`;
-
-      const zero = document.createElement("button");
-      zero.type = "button";
-      zero.className = "star zero";
-      zero.textContent = "0";
-      zero.setAttribute("aria-label", `${label}: 0`);
-
-      zero.addEventListener("click", () => {
-        nilai[id] = 0;
-        perbarui();
-        hitungTotal();
-      });
-
-      stars.appendChild(zero);
-
-      for (let i = 1; i <= maksimal; i++) {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "star";
-        button.textContent = "★";
-        button.setAttribute("aria-label", `${label}: ${i} bintang`);
-
-        button.addEventListener("click", () => {
-          nilai[id] = i * nilaiPerBintang;
-          perbarui();
-          hitungTotal();
-        });
-
-        stars.appendChild(button);
-      }
-
-      function perbarui() {
-        const current = nilai[id];
-
-        [...stars.children].forEach((button, index) => {
-          if (index === 0) {
-            button.classList.toggle("selected", current === 0);
-          } else {
-            button.classList.toggle(
-              "selected",
-              current !== null && current > 0 &&
-              index <= current / nilaiPerBintang
-            );
-          }
-        });
-
-        score.textContent =
-          current === null
-            ? `—/${maksimal * nilaiPerBintang}`
-            : `${current}/${maksimal * nilaiPerBintang}`;
-      }
-
-      right.append(stars, score);
-      row.append(name, right);
-      target.appendChild(row);
-    }
-
-    const bintangKerapian =
-      document.getElementById("bintangKerapian");
-
-    buatRating(
-      "kerapian", "Kerapian", 5,
-      bintangKerapian, 5
-    );
-
-    const ratingKarakter =
-      document.getElementById("ratingKarakter");
-
-    buatRating("sikap", "Sikap", 5, ratingKarakter, 1);
-    buatRating("kompak", "Kompak", 10, ratingKarakter, 1);
-    buatRating("bersih", "Kebersihan", 10, ratingKarakter, 1);
-
-    // ==========================================
-    // HITUNG NILAI AKHIR
-    // ==========================================
-
-    function hitungTotal() {
-      const total =
-        nilai.ketepatan +
-        nilai.kelengkapan +
-        (nilai.kerapian ?? 0) +
-        (nilai.sikap ?? 0) +
-        (nilai.kompak ?? 0) +
-        (nilai.bersih ?? 0);
-
-      document.getElementById("nilaiAkhir").textContent =
-        total.toLocaleString("id-ID", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        });
-
-      return total;
-    }
-
-    // ==========================================
-    // BERSIHKAN FORM UNTUK REGU BERIKUTNYA
-    // ==========================================
-
-    tombolBersihkan.addEventListener("click", function() {
-      const yakin = window.confirm(
-        "Bersihkan semua isian penilaian di layar? Data yang sudah terkirim ke Google Forms tidak akan terhapus."
-      );
-
-      if (!yakin) return;
-
-      // Kosongkan nama regu dan seluruh checkbox.
-      inputRegu.value = "";
-      form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.checked = false;
-      });
-
-      pelanggaranDipilih.clear();
-      perlengkapanDipilih.clear();
-
-      // Kembalikan semua nilai ke kondisi awal.
-      nilai.ketepatan = 25;
-      nilai.kelengkapan = 0;
-      nilai.kerapian = null;
-      nilai.sikap = null;
-      nilai.kompak = null;
-      nilai.bersih = null;
-
-      hitungKetepatan();
-      hitungKelengkapan();
-
-      // Perbarui tampilan bintang dan skor setiap kriteria.
-      document.querySelectorAll(".rating-row").forEach(row => {
-        const score = row.querySelector(".score");
-        const buttons = row.querySelectorAll(".star");
-        const maksimal = buttons.length - 1;
-        const nama = row.querySelector(".rating-name").textContent;
-        const nilaiPerBintang = nama === "Kerapian" ? 5 : 1;
-
-        buttons.forEach(button => button.classList.remove("selected"));
-        score.textContent = `—/${maksimal * nilaiPerBintang}`;
-      });
-
-      hitungTotal();
-      status.textContent = "Formulir sudah dibersihkan. Silakan masukkan nama regu berikutnya.";
-      inputRegu.focus();
-    });
-
-    // ==========================================
-    // KIRIM DATA KE GOOGLE FORMS
-    // ==========================================
-
-    form.addEventListener("submit", function(event) {
-      event.preventDefault();
-
-      if (tombolKirim.disabled) return;
-
-      const namaRegu =
-        document.getElementById("regu").value.trim();
-
-      if (!namaRegu) {
-        status.textContent = "Nama regu wajib diisi.";
-        document.getElementById("regu").focus();
-        return;
-      }
-
-      const belumDinilai = [
-        ["kerapian", "Kerapian"],
-        ["sikap", "Sikap"],
-        ["kompak", "Kompak"],
-        ["bersih", "Kebersihan"]
-      ].filter(([id]) => nilai[id] === null);
-
-      if (belumDinilai.length > 0) {
-        status.textContent =
-          "Silakan beri nilai bintang untuk: " +
-          belumDinilai.map(([, label]) => label).join(", ") + ".";
-        return;
-      }
-
-      const dataKirim = {
-        [ENTRY.lomba]: "A1",
-        [ENTRY.regu]: namaRegu,
-        [ENTRY.ketepatan]: String(nilai.ketepatan),
-        [ENTRY.kelengkapan]: nilai.kelengkapan.toFixed(2),
-        [ENTRY.kerapian]: String(nilai.kerapian),
-        [ENTRY.sikap]: String(nilai.sikap),
-        [ENTRY.kompak]: String(nilai.kompak),
-        [ENTRY.bersih]: String(nilai.bersih)
-      };
-
-      let frame = document.getElementById("google-form-frame");
-
-      if (!frame) {
-        frame = document.createElement("iframe");
-        frame.id = "google-form-frame";
-        frame.name = "google-form-frame";
-        frame.title = "Pengiriman Google Forms";
-        frame.style.display = "none";
-        document.body.appendChild(frame);
-      }
-
-      const formKirim = document.createElement("form");
-      formKirim.method = "POST";
-      formKirim.action = GOOGLE_FORM_URL;
-      formKirim.target = frame.name;
-      formKirim.style.display = "none";
-
-      Object.entries(dataKirim).forEach(([name, value]) => {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = name;
-        input.value = value;
-        formKirim.appendChild(input);
-      });
-
-      document.body.appendChild(formKirim);
-
-      tombolKirim.disabled = true;
-      tombolKirim.textContent = "Mengirim...";
-      status.textContent =
-        "Permintaan dikirim. Periksa Respons Google Forms untuk memastikan data diterima.";
-
-      formKirim.submit();
-      formKirim.remove();
-
-      setTimeout(() => {
-        tombolKirim.disabled = false;
-        tombolKirim.textContent = "Kirim Data Penilaian";
-      }, 3000);
-    });
-  </script>
-</body>
-</html>
+<header><h1 id="pageTitle">Penilaian LT II Regol 2026</h1><p id="pageSub">Instrumen penilaian dinamis · A1/A2</p></header>
+<main>
+  <div id="status" class="status" role="status" aria-live="polite"></div>
+  <section class="card">
+    <div class="title"><span>Identitas penilaian</span><span class="pill" id="codeBadge">A1</span></div>
+    <label for="competition"><b>Pilih mata lomba</b></label>
+    <select id="competition"><option value="A1">A1 — Pemeriksaan Perlengkapan</option><option value="A2">A2 — Administrasi Regu</option></select>
+    <p class="hint">Kriteria aktif dan bobot dibaca dari <b>penilaian.js</b>. Ubah file konfigurasi itu untuk menyesuaikan matriks.</p>
+    <label for="regu"><b>Nama regu</b></label><input id="regu" type="text" placeholder="Contoh: Singa" autocomplete="off" required>
+  </section>
+
+  <section class="card" id="accuracyCard">
+    <div class="title"><span id="accuracyTitle">Ketepatan</span><span class="score"><b id="accuracyScore">0</b>/<span id="accuracyMax">0</span></span></div>
+    <p class="hint" id="accuracyHint">Centang temuan yang ditemukan. Nilai dihitung dari bobot maksimum dikurangi potongan.</p>
+    <div id="findings" class="list"></div><p class="hint" id="findsum">Belum ada temuan.</p>
+  </section>
+
+  <section class="card" id="completenessCard">
+    <div class="title"><span id="completenessTitle">Kelengkapan</span><span class="score"><b id="completenessScore">0</b>/<span id="completenessMax">0</span></span></div>
+    <p class="hint" id="completenessHint">Nilai dihitung proporsional dari jumlah butir yang tersedia.</p>
+    <div id="docs" class="list"></div><p class="hint"><span id="count">0</span> butir dicentang.</p>
+  </section>
+
+  <div id="otherCriteria"></div>
+
+  <section class="card total">
+    <div><b>Nilai sementara</b><div class="small" id="totalDescription">Total nilai aktif.</div></div>
+    <div class="big"><span id="total">0</span><small id="totalMax" style="font-size:12px">/90</small></div>
+  </section>
+
+  <section class="card">
+    <div class="notice"><b>Sebelum mengirim:</b> pastikan nama regu dan nilai sudah benar. Pengiriman menambahkan satu respons baru di Google Forms; pengiriman ulang tidak menimpa respons sebelumnya.</div>
+    <p class="hint">Jika browser menampilkan pesan terkirim, tetap periksa tab Respons Google Forms untuk memastikan data masuk. Browser tidak dapat membaca konfirmasi Google Forms secara langsung karena batasan lintas situs.</p>
+    <div class="actions"><button class="btn primary" id="submitBtn">Kirim penilaian ke Google Forms</button><button class="btn" id="clearBtn">Bersihkan Form</button></div>
+  </section>
+</main>
+<footer style="text-align:center;color:#657166;font-size:11px;padding:5px 12px 18px">LT II Regol 2026 · Penilaian berbasis konfigurasi</footer>
+
+<!-- Google Forms menerima data melalui form POST ke iframe tersembunyi. -->
+<iframe name="googleFormTarget" id="googleFormTarget" title="Pengiriman Google Forms" style="display:none"></iframe>
+<form id="googleSubmitForm" method="POST" target="googleFormTarget" style="display:none"></form>
+
+<script>
+"use strict";
+const A1_DOCS=["Tas","Seragam Pramuka lengkap","Pakaian olahraga atau pakaian kegiatan","Pakaian ganti dan pakaian tidur","Pakaian dalam","Jaket atau pakaian hangat","Sepatu dan sandal","Jas hujan atau ponco","Alat ibadah","Alat mandi dan handuk","Obat-obatan pribadi","Alat tulis dan buku saku Pramuka","Alat tidur (matras dan selimut atau sleeping bag)","Alat makan","Botol minum","Bekal makanan sesuai ketentuan panitia","Senter","Kantong pakaian kotor dan kantong sampah"];
+const A2_DOCS=["Standarisasi format dokumen","Biodata anggota regu / daftar induk anggota regu","Sejarah regu","Log book regu","Daftar hadir latihan","Inventaris regu","Iuran regu","Kas/tabungan regu","Notulensi regu (format sismintir)","Buku SKU","Buku SKK","Perencanaan tapak perkemahan (rincian diuraikan)"];
+const FINDINGS={
+ A1:[["berbahaya","Membawa barang berbahaya",10],["terlarang","Membawa barang yang dilarang",5],["elektronik","Membawa perangkat elektronik tanpa izin",3],["bekal","Bekal tidak sesuai ketentuan",3],["berlebih","Membawa barang yang tidak diperlukan/berlebihan",2]],
+ A2:[["kosong","Berkas kosong atau hanya berupa sampul",5],["tak-sesuai","Isi tidak sesuai dengan judul berkas",5],["cover","Buku lain hanya diganti sampul/cover",10],["tak-terbaca","Isi tidak terbaca atau bagian penting tidak tersedia",3],["format","Format dokumen tidak mengikuti ketentuan",2]]
+};
+const $=id=>document.getElementById(id);
+const fmt=n=>Number(n||0).toLocaleString("id-ID",{maximumFractionDigits:2});
+let code="A1", docs=[], findings=[], checkedDocs=new Set(), checkedFindings=new Set(), scores={};
+
+function activeConfig(){return PenilaianConfig.getCompetition(code)}
+function maxFor(key){return Number(activeConfig().criteria[key]||0)}
+function showStatus(message,type){$("status").textContent=message;$("status").className="status show "+type}
+function clearStatus(){$("status").textContent="";$("status").className="status"}
+function renderChecks(data,root,isDoc){
+ root.innerHTML="";
+ data.forEach((x,i)=>{
+  const label=document.createElement("label");label.className="item";
+  const input=document.createElement("input");input.type="checkbox";
+  const text=document.createElement("span");
+  if(isDoc){
+   text.textContent=(i+1)+". "+x;
+   input.addEventListener("change",()=>{input.checked?checkedDocs.add(i):checkedDocs.delete(i);calculate()});
+   label.append(input,text);
+  }else{
+   text.textContent=x[1];const d=document.createElement("span");d.className="deduct";d.textContent="−"+x[2];
+   input.addEventListener("change",()=>{input.checked?checkedFindings.add(x[0]):checkedFindings.delete(x[0]);calculate()});
+   label.append(input,text,d);
+  }
+  root.append(label);
+ });
+}
+function makeScoreControl(item){
+ const card=document.createElement("section");card.className="card";card.dataset.key=item.key;
+ const title=document.createElement("div");title.className="title";
+ const name=document.createElement("span");name.textContent=item.label;
+ const score=document.createElement("span");score.className="score";
+ score.innerHTML='<b id="score-'+item.key+'">0</b>/<span>'+item.maxScore+'</span>';
+ title.append(name,score);card.append(title);
+ const hint=document.createElement("p");hint.className="hint";hint.textContent="Masukkan nilai juri, maksimal "+item.maxScore+" poin.";card.append(hint);
+ const wrap=document.createElement("div");wrap.className="scoreInput";
+ const range=document.createElement("input");range.type="range";range.min="0";range.max=String(item.maxScore);range.step="0.5";range.value="0";range.setAttribute("aria-label",item.label+" slider");
+ const number=document.createElement("input");number.type="number";number.min="0";number.max=String(item.maxScore);number.step="0.5";number.value="0";number.setAttribute("aria-label",item.label+" nilai");
+ const update=v=>{let n=Number(v);if(!Number.isFinite(n))n=0;n=Math.min(item.maxScore,Math.max(0,n));number.value=String(n);range.value=String(n);scores[item.key]=n;$("score-"+item.key).textContent=fmt(n);calculate()};
+ range.addEventListener("input",()=>update(range.value));number.addEventListener("input",()=>update(number.value));
+ wrap.append(range,number);card.append(wrap);return card;
+}
+function setup(){
+ clearStatus();
+ code=$("competition").value;
+ const config=activeConfig();
+ $("codeBadge").textContent=code;
+ $("pageTitle").textContent="Penilaian LT II — "+code;
+ $("pageSub").textContent=code==="A1"?"Regol 2026 · Pemeriksaan Perlengkapan":"Regol 2026 · Administrasi Regu";
+ docs=code==="A1"?A1_DOCS:A2_DOCS;
+ findings=FINDINGS[code]||[];
+ checkedDocs=new Set();checkedFindings=new Set();scores={};
+ $("regu").value="";
+ $("accuracyTitle").textContent="Ketepatan";
+ $("accuracyMax").textContent=fmt(maxFor("ketepatan"));
+ $("accuracyHint").textContent="Centang temuan yang ditemukan. Potongan nilai bersifat konfigurasi awal dan perlu sesuai juknis resmi.";
+ $("completenessTitle").textContent="Kelengkapan";
+ $("completenessMax").textContent=fmt(maxFor("kelengkapan"));
+ $("completenessHint").textContent="Centang butir yang tersedia. Nilai dihitung proporsional terhadap bobot kelengkapan.";
+ renderChecks(docs,$("docs"),true);renderChecks(findings,$("findings"),false);
+ $("otherCriteria").innerHTML="";
+ const excluded=new Set(["ketepatan","kelengkapan"]);
+ const active=PenilaianConfig.getActiveCriteria(code).filter(x=>!excluded.has(x.key));
+ active.forEach(item=>$("otherCriteria").append(makeScoreControl(item)));
+ $("accuracyCard").hidden=maxFor("ketepatan")<=0;
+ $("completenessCard").hidden=maxFor("kelengkapan")<=0;
+ calculate();
+}
+function calculate(){
+ const accuracyMax=maxFor("ketepatan"), completenessMax=maxFor("kelengkapan");
+ const deduction=findings.filter(x=>checkedFindings.has(x[0])).reduce((sum,x)=>sum+x[2],0);
+ const accuracy=Math.max(0,accuracyMax-deduction);
+ const completeness=docs.length?(checkedDocs.size/docs.length)*completenessMax:0;
+ $("accuracyScore").textContent=fmt(accuracy);
+ $("completenessScore").textContent=fmt(completeness);
+ $("count").textContent=checkedDocs.size;
+ $("findsum").textContent=checkedFindings.size?checkedFindings.size+" temuan · total pengurangan "+fmt(deduction)+" poin.":"Belum ada temuan.";
+ let total=0;
+ for(const item of PenilaianConfig.getActiveCriteria(code)){
+  let val=0;
+  if(item.key==="ketepatan") val=accuracy;
+  else if(item.key==="kelengkapan") val=completeness;
+  else val=Math.min(item.maxScore,Math.max(0,Number(scores[item.key]||0)));
+  total+=val;
+ }
+ $("total").textContent=fmt(total);
+ $("totalMax").textContent="/"+fmt(PenilaianConfig.getTotalMax(code));
+ $("totalDescription").textContent=PenilaianConfig.getActiveCriteria(code).length+" kriteria aktif · total sesuai bobot penilaian.js.";
+}
+function clearForm(){setup();window.scrollTo({top:0,behavior:"smooth"});showStatus("Isian dibersihkan. Kode mata lomba tetap "+code+".","ok")}
+function submitToGoogle(){
+ clearStatus();
+ const team=$("regu").value.trim();
+ if(!team){showStatus("Isi nama regu terlebih dahulu sebelum mengirim.","err");$("regu").focus();return}
+ let values={...scores};
+ // Add computed values; inactive criteria are zeroed by the configuration module.
+ const deduction=findings.filter(x=>checkedFindings.has(x[0])).reduce((sum,x)=>sum+x[2],0);
+ values.ketepatan=Math.max(0,maxFor("ketepatan")-deduction);
+ values.kelengkapan=docs.length?(checkedDocs.size/docs.length)*maxFor("kelengkapan"):0;
+ const payload=PenilaianConfig.buildFormPayload(code,team,values);
+ const form=$("googleSubmitForm");form.innerHTML="";form.action=PenilaianConfig.FORM_RESPONSE_URL;
+ Object.entries(payload).forEach(([name,value])=>{const input=document.createElement("input");input.type="hidden";input.name=name;input.value=String(value);form.append(input)});
+ $("submitBtn").disabled=true;$("submitBtn").textContent="Mengirim…";
+ // Form submits cross-origin; browser cannot expose Google's confirmation page to this page.
+ const iframe=$("googleFormTarget");
+ let timer=setTimeout(()=>{$("submitBtn").disabled=false;$("submitBtn").textContent="Kirim penilaian ke Google Forms";showStatus("Permintaan pengiriman sudah dikirim ke Google Forms. Karena konfirmasi lintas situs tidak bisa dibaca oleh halaman ini, periksa tab Respons di Google Forms untuk memastikan data masuk.","ok")},1800);
+ iframe.onload=()=>{clearTimeout(timer);$("submitBtn").disabled=false;$("submitBtn").textContent="Kirim penilaian ke Google Forms";showStatus("Permintaan pengiriman selesai diproses oleh browser. Pastikan data benar-benar masuk dengan memeriksa tab Respons Google Forms.","ok");iframe.onload=null};
+ form.submit();
+}
+$("competition").addEventListener("change",setup);
+$("clearBtn").addEventListener("click",clearForm);
+$("submitBtn").addEventListener("click",submitToGoogle);
+setup();
+</script>
+</body></html>
