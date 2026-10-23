@@ -197,11 +197,65 @@
 
     document.getElementById("benar").addEventListener("input", hitung);
 
-    document.getElementById("simpan").addEventListener("click", () => {
-      document.getElementById("status").textContent =
-        "Prototipe saja: nilai belum dikirim atau disimpan. " +
-        "Integrasi Google Forms belum diaktifkan.";
-    });
+
+const GOOGLE_FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSe1qSFeu5SvMp6JdAMDk66kyAQmJtwdHMnywVaml42oQMkPBw/formResponse";
+
+const TEST_ENTRIES = {
+  "entry.511078072": "yes",
+  "entry.1652413056": "bruh"
+};
+
+document.getElementById("simpan").addEventListener("click", () => {
+  const status = document.getElementById("status");
+  const button = document.getElementById("simpan");
+
+  // Cegah klik berulang selama pengiriman
+  if (button.disabled) return;
+
+  button.disabled = true;
+  button.textContent = "Mengirim...";
+
+  // Iframe tersembunyi untuk menerima respons lintas domain
+  let frame = document.getElementById("google-form-frame");
+
+  if (!frame) {
+    frame = document.createElement("iframe");
+    frame.id = "google-form-frame";
+    frame.name = "google-form-frame";
+    frame.style.display = "none";
+    document.body.appendChild(frame);
+  }
+
+  // Buat formulir pengiriman
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = GOOGLE_FORM_URL;
+  form.target = "google-form-frame";
+  form.style.display = "none";
+
+  Object.entries(TEST_ENTRIES).forEach(([name, value]) => {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+  form.remove();
+
+  status.textContent =
+    "Permintaan uji sudah dikirim. Periksa tab Responses Google Forms untuk memastikan data diterima.";
+
+  // Pengiriman lintas domain tidak menyediakan konfirmasi
+  // keberhasilan yang dapat diandalkan di halaman ini.
+  setTimeout(() => {
+    button.disabled = false;
+    button.textContent = "Simpan nilai";
+  }, 3000);
+});
   </script>
 </body>
 </html>
