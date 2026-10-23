@@ -166,7 +166,7 @@
         fungsiKegunaan: 0,
         keselamatan: 0,
         kreativitas: 0,
-        kekompakan: 0,
+        kekompakan: 10,
         kerjaSama: 0,
         kecepatanEfisiensiWaktu: 0,
         pengelolaanSumberdaya: 0,
