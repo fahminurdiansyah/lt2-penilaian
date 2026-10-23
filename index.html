@@ -169,33 +169,49 @@
   <footer>Prototipe LT II Regol 2026</footer>
 
   <script>
-    // KONFIGURASI GOOGLE FORM UJI
     const GOOGLE_FORM_URL =
       "https://docs.google.com/forms/d/e/1FAIpQLSe1qSFeu5SvMp6JdAMDk66kyAQmJtwdHMnywVaml42oQMkPBw/formResponse";
-
-    // ID pertanyaan pada Google Form uji Anda
-    const ENTRY_KOLOM_1 = "entry.511078072";
-    const ENTRY_KOLOM_2 = "entry.1652413056";
-
+  
+    const ENTRY = {
+      lomba: "entry.511078072",
+      peserta: "entry.1652413056",
+      benar: "entry.1102203745",
+      ketepatan: "entry.308553817",
+      sikap: "entry.473179287",
+      akhir: "entry.646836897"
+    };
+  
     const formUji = document.getElementById("ujiForm");
     const tombol = document.getElementById("simpan");
     const status = document.getElementById("status");
-
+  
     formUji.addEventListener("submit", function(event) {
       event.preventDefault();
-
+  
       if (tombol.disabled) return;
-
-      const nilai1 = document.getElementById("kolom1").value.trim();
-      const nilai2 = document.getElementById("kolom2").value.trim();
-
-      if (!nilai1 || !nilai2) {
-        status.textContent = "Silakan isi kedua kolom terlebih dahulu.";
+  
+      const lomba =
+        document.getElementById("kolom1").value.trim();
+  
+      const peserta =
+        document.getElementById("kolom2").value.trim();
+  
+      if (!lomba || !peserta) {
+        status.textContent = "Isi kedua kolom terlebih dahulu.";
         return;
       }
-
+  
+      const data = {
+        [ENTRY.lomba]: lomba,
+        [ENTRY.peserta]: peserta,
+        [ENTRY.benar]: "15",
+        [ENTRY.ketepatan]: "60",
+        [ENTRY.sikap]: "20",
+        [ENTRY.akhir]: "80"
+      };
+  
       let frame = document.getElementById("google-form-frame");
-
+  
       if (!frame) {
         frame = document.createElement("iframe");
         frame.id = "google-form-frame";
@@ -203,18 +219,13 @@
         frame.style.display = "none";
         document.body.appendChild(frame);
       }
-
+  
       const formKirim = document.createElement("form");
       formKirim.method = "POST";
       formKirim.action = GOOGLE_FORM_URL;
       formKirim.target = frame.name;
       formKirim.style.display = "none";
-
-      const data = {
-        [ENTRY_KOLOM_1]: nilai1,
-        [ENTRY_KOLOM_2]: nilai2
-      };
-
+  
       Object.entries(data).forEach(([nama, nilai]) => {
         const input = document.createElement("input");
         input.type = "hidden";
@@ -222,22 +233,23 @@
         input.value = nilai;
         formKirim.appendChild(input);
       });
-
+  
       document.body.appendChild(formKirim);
-
+  
       tombol.disabled = true;
       tombol.textContent = "Mengirim...";
       status.textContent =
-        "Data sedang dikirim. Periksa Respons Google Forms untuk memastikan data masuk.";
-
+        "Pengiriman dicoba. Periksa tab Respons Google Forms.";
+  
       formKirim.submit();
       formKirim.remove();
-
+  
       setTimeout(() => {
         tombol.disabled = false;
         tombol.textContent = "Kirim Data";
       }, 3000);
     });
   </script>
+  
 </body>
 </html>
