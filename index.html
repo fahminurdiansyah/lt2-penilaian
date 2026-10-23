@@ -66,6 +66,7 @@
     }
 
     input {
+      display: block;
       width: 100%;
       min-height: 52px;
       padding: 12px;
@@ -74,6 +75,11 @@
       font-size: 16px;
       background: white;
       color: var(--text);
+    }
+
+    input:focus {
+      outline: 2px solid var(--green-light);
+      border-color: var(--green);
     }
 
     .hint {
@@ -127,24 +133,74 @@
 
   <main>
     <form id="ujiForm">
+
       <section class="card">
-        <label for="kolom1">Kolom Uji 1</label>
+        <label for="lomba">Mata Lomba</label>
         <input
-          id="kolom1"
+          id="lomba"
           type="text"
           placeholder="Contoh: E2"
-          autocomplete="off"
           required
         >
       </section>
 
       <section class="card">
-        <label for="kolom2">Kolom Uji 2</label>
+        <label for="peserta">Nomor Peserta</label>
         <input
-          id="kolom2"
-          type="text"
-          placeholder="Contoh: Peserta 07"
-          autocomplete="off"
+          id="peserta"
+          type="number"
+          min="1"
+          max="28"
+          step="1"
+          placeholder="Contoh: 7"
+          required
+        >
+      </section>
+
+      <section class="card">
+        <label for="benar">Jumlah Jawaban Benar</label>
+        <input
+          id="benar"
+          type="number"
+          min="0"
+          step="1"
+          placeholder="Contoh: 15"
+          required
+        >
+      </section>
+
+      <section class="card">
+        <label for="ketepatan">Nilai Ketepatan</label>
+        <input
+          id="ketepatan"
+          type="number"
+          min="0"
+          step="any"
+          placeholder="Contoh: 60"
+          required
+        >
+      </section>
+
+      <section class="card">
+        <label for="sikap">Nilai Sikap</label>
+        <input
+          id="sikap"
+          type="number"
+          min="0"
+          step="any"
+          placeholder="Contoh: 20"
+          required
+        >
+      </section>
+
+      <section class="card">
+        <label for="akhir">Nilai Akhir</label>
+        <input
+          id="akhir"
+          type="number"
+          min="0"
+          step="any"
+          placeholder="Contoh: 80"
           required
         >
       </section>
@@ -159,19 +215,24 @@
         </p>
 
         <p class="hint">
-          Setelah mengirim, periksa tab Respons di Google Forms
+          Setelah mengirim, periksa tab Respons Google Forms
           untuk memastikan data benar-benar diterima.
         </p>
       </section>
+
     </form>
   </main>
 
-  <footer>Prototipe LT II Regol 2026</footer>
+  <footer>
+    Prototipe LT II Regol 2026
+  </footer>
 
   <script>
+    // URL GOOGLE FORM UJI
     const GOOGLE_FORM_URL =
       "https://docs.google.com/forms/d/e/1FAIpQLSe1qSFeu5SvMp6JdAMDk66kyAQmJtwdHMnywVaml42oQMkPBw/formResponse";
-  
+
+    // ID PERTANYAAN GOOGLE FORMS
     const ENTRY = {
       lomba: "entry.511078072",
       peserta: "entry.1652413056",
@@ -180,76 +241,87 @@
       sikap: "entry.473179287",
       akhir: "entry.646836897"
     };
-  
+
     const formUji = document.getElementById("ujiForm");
     const tombol = document.getElementById("simpan");
     const status = document.getElementById("status");
-  
+
     formUji.addEventListener("submit", function(event) {
       event.preventDefault();
-  
+
       if (tombol.disabled) return;
-  
-      const lomba =
-        document.getElementById("kolom1").value.trim();
-  
-      const peserta =
-        document.getElementById("kolom2").value.trim();
-  
-      if (!lomba || !peserta) {
-        status.textContent = "Isi kedua kolom terlebih dahulu.";
+
+      // AMBIL NILAI DARI ENAM KOLOM
+      const dataNilai = {
+        lomba: document.getElementById("lomba").value.trim(),
+        peserta: document.getElementById("peserta").value.trim(),
+        benar: document.getElementById("benar").value.trim(),
+        ketepatan: document.getElementById("ketepatan").value.trim(),
+        sikap: document.getElementById("sikap").value.trim(),
+        akhir: document.getElementById("akhir").value.trim()
+      };
+
+      // PASTIKAN SEMUA KOLOM TERISI
+      if (Object.values(dataNilai).some(nilai => nilai === "")) {
+        status.textContent =
+          "Semua kolom wajib diisi sebelum mengirim.";
         return;
       }
-  
-      const data = {
-        [ENTRY.lomba]: lomba,
-        [ENTRY.peserta]: peserta,
-        [ENTRY.benar]: "15",
-        [ENTRY.ketepatan]: "60",
-        [ENTRY.sikap]: "20",
-        [ENTRY.akhir]: "80"
+
+      // PETAKAN NILAI KE ID GOOGLE FORMS
+      const dataKirim = {
+        [ENTRY.lomba]: dataNilai.lomba,
+        [ENTRY.peserta]: dataNilai.peserta,
+        [ENTRY.benar]: dataNilai.benar,
+        [ENTRY.ketepatan]: dataNilai.ketepatan,
+        [ENTRY.sikap]: dataNilai.sikap,
+        [ENTRY.akhir]: dataNilai.akhir
       };
-  
+
+      // SIAPKAN IFRAME TERSEMBUNYI
       let frame = document.getElementById("google-form-frame");
-  
+
       if (!frame) {
         frame = document.createElement("iframe");
         frame.id = "google-form-frame";
         frame.name = "google-form-frame";
         frame.style.display = "none";
+        frame.title = "Pengiriman Google Forms";
         document.body.appendChild(frame);
       }
-  
+
+      // BUAT FORM PENGIRIMAN
       const formKirim = document.createElement("form");
       formKirim.method = "POST";
       formKirim.action = GOOGLE_FORM_URL;
       formKirim.target = frame.name;
       formKirim.style.display = "none";
-  
-      Object.entries(data).forEach(([nama, nilai]) => {
+
+      Object.entries(dataKirim).forEach(([nama, nilai]) => {
         const input = document.createElement("input");
         input.type = "hidden";
         input.name = nama;
         input.value = nilai;
         formKirim.appendChild(input);
       });
-  
+
       document.body.appendChild(formKirim);
-  
+
       tombol.disabled = true;
       tombol.textContent = "Mengirim...";
       status.textContent =
-        "Pengiriman dicoba. Periksa tab Respons Google Forms.";
-  
+        "Permintaan pengiriman sedang dicoba. Periksa Respons Google Forms untuk memastikan data masuk.";
+
       formKirim.submit();
       formKirim.remove();
-  
+
+      // AKTIFKAN KEMBALI TOMBOL
+      // Ini bukan konfirmasi penerimaan dari Google Forms.
       setTimeout(() => {
         tombol.disabled = false;
         tombol.textContent = "Kirim Data";
       }, 3000);
     });
   </script>
-  
 </body>
 </html>
