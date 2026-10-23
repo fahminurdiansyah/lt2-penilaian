@@ -6,24 +6,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#173d2b">
   <title>Penilaian LT II Regol 2026</title>
+
   <style>
-    * { box-sizing: border-box; }
+    :root {
+      --green: #173d2b;
+      --green-light: #e0f1e5;
+      --bg: #f2f5f2;
+      --border: #d5ddd5;
+      --text: #202820;
+      --muted: #657166;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f2f5f2;
-      color: #202820;
+      background: var(--bg);
+      color: var(--text);
     }
 
     header {
-      background: #173d2b;
+      background: var(--green);
       color: white;
-      padding: 22px 18px;
+      padding: 24px 18px;
     }
 
-    header h1 { font-size: 21px; margin: 0 0 6px; }
-    header p { font-size: 14px; margin: 0; opacity: .85; }
+    header h1 {
+      margin: 0 0 7px;
+      font-size: 22px;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 14px;
+      opacity: .85;
+    }
 
     main {
       max-width: 520px;
@@ -33,26 +53,29 @@
 
     .card {
       background: white;
+      border-radius: 14px;
       padding: 18px;
       margin-bottom: 14px;
-      border-radius: 14px;
       box-shadow: 0 2px 8px #0000000c;
     }
 
-    label, .field-title {
+    label,
+    .field-title {
       display: block;
       font-weight: bold;
       margin-bottom: 10px;
     }
 
-    select, input {
+    select,
+    input {
       width: 100%;
-      min-height: 50px;
+      min-height: 52px;
       padding: 12px;
-      border: 1px solid #cbd5cb;
+      border: 1px solid var(--border);
       border-radius: 10px;
       font-size: 16px;
       background: white;
+      color: var(--text);
     }
 
     .choices {
@@ -61,45 +84,87 @@
       gap: 10px;
     }
 
-    button.choice {
-      min-height: 60px;
-      border: 2px solid #d5ddd5;
+    .choice {
+      min-height: 64px;
+      border: 2px solid var(--border);
       border-radius: 12px;
       background: white;
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
+      color: var(--text);
       cursor: pointer;
+      touch-action: manipulation;
     }
 
-    button.choice.selected {
-      background: #dcefe2;
-      border-color: #247443;
-      color: #173d2b;
+    .choice.selected {
+      background: var(--green-light);
+      border-color: var(--green);
+      color: var(--green);
     }
 
     .hint {
-      color: #667066;
+      color: var(--muted);
       font-size: 13px;
       line-height: 1.5;
     }
 
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 12px 0;
+    }
+
+    .result-row strong {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .total {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--green);
+    }
+
     .submit {
       width: 100%;
-      min-height: 56px;
+      min-height: 58px;
       border: 0;
       border-radius: 12px;
-      background: #173d2b;
+      background: var(--green);
       color: white;
       font-size: 17px;
       font-weight: bold;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .submit:disabled {
+      opacity: .6;
+      cursor: wait;
     }
 
     #status {
+      background: white;
+      border-radius: 10px;
+      padding: 12px;
       font-size: 14px;
       line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    footer {
+      text-align: center;
+      padding: 8px 16px 24px;
+      color: var(--muted);
+      font-size: 12px;
     }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Penilaian LT II</h1>
@@ -107,64 +172,115 @@
   </header>
 
   <main>
-    <div class="card">
+    <section class="card">
       <label for="lomba">Mata lomba</label>
       <select id="lomba">
-        <option value="E2">E2 — KIM Lihat</option>
+        <option value="E2">E2 — KIM Lihat (simulasi)</option>
       </select>
-    </div>
+    </section>
 
-    <div class="card">
+    <section class="card">
       <label for="peserta">Nomor peserta</label>
       <select id="peserta">
         <option value="">Pilih nomor peserta</option>
-        <script>
-          for (let i = 1; i <= 28; i++) {
-            document.write(
-              `<option value="${i}">Peserta ${String(i).padStart(2, "0")}</option>`
-            );
-          }
-        </script>
       </select>
-    </div>
+    </section>
 
-    <div class="card">
+    <section class="card">
       <label for="benar">Jumlah jawaban benar (0–20)</label>
-      <input id="benar" type="number" min="0" max="20"
-        inputmode="numeric" placeholder="Masukkan jumlah benar">
-    </div>
+      <input
+        id="benar"
+        type="number"
+        min="0"
+        max="20"
+        step="1"
+        inputmode="numeric"
+        placeholder="Masukkan jumlah benar"
+      >
+    </section>
 
-    <div class="card">
+    <section class="card">
       <span class="field-title">Nilai sikap</span>
-      <div class="choices" id="sikap">
+
+      <div class="choices" id="pilihanSikap">
         <button type="button" class="choice" data-score="5">5</button>
         <button type="button" class="choice" data-score="10">10</button>
         <button type="button" class="choice" data-score="15">15</button>
         <button type="button" class="choice" data-score="20">20</button>
       </div>
-      <p class="hint">
-        Contoh skala saja. Indikator sikap perlu disepakati panitia.
-      </p>
-    </div>
 
-    <div class="card">
+      <p class="hint">
+        Pilihan ini hanya simulasi. Indikator sikap perlu disepakati panitia.
+      </p>
+    </section>
+
+    <section class="card">
       <span class="field-title">Pratinjau nilai</span>
-      <p>Ketepatan: <strong id="nilaiKetepatan">—</strong></p>
-      <p>Nilai sikap: <strong id="nilaiSikap">—</strong></p>
-      <p>Nilai akhir: <strong id="nilaiAkhir">—</strong></p>
-      <p class="hint">
-        Perhitungan contoh: ketepatan maksimal 80 poin,
-        sikap maksimal 20 poin.
-      </p>
-    </div>
 
-    <button class="submit" id="simpan" type="button">
-      Simpan nilai
-    </button>
-    <p id="status" role="status"></p>
+      <div class="result-row">
+        <span>Ketepatan</span>
+        <strong id="nilaiKetepatan">—</strong>
+      </div>
+
+      <div class="result-row">
+        <span>Sikap</span>
+        <strong id="nilaiSikap">—</strong>
+      </div>
+
+      <hr style="border:0;border-top:1px solid var(--border)">
+
+      <div class="result-row">
+        <span>Nilai akhir</span>
+        <strong class="total" id="nilaiAkhir">—</strong>
+      </div>
+
+      <p class="hint">
+        Simulasi: ketepatan maksimal 80 poin dan sikap maksimal 20 poin.
+      </p>
+    </section>
+
+    <section class="card">
+      <span class="field-title">Uji koneksi Google Forms</span>
+      <p class="hint">
+        Tombol ini mengirimkan dua nilai percobaan ke formulir uji,
+        bukan nilai peserta yang sebenarnya.
+      </p>
+
+      <button class="submit" id="simpan" type="button">
+        Kirim data uji
+      </button>
+
+      <p id="status" role="status" aria-live="polite">
+        Belum ada pengiriman.
+      </p>
+    </section>
   </main>
 
+  <footer>
+    Prototipe LT II Regol 2026
+  </footer>
+
   <script>
+    // KONFIGURASI FORM UJI
+    const GOOGLE_FORM_URL =
+      "https://docs.google.com/forms/d/e/1FAIpQLSe1qSFeu5SvMp6JdAMDk66kyAQmJtwdHMnywVaml42oQMkPBw/formResponse";
+
+    const TEST_ENTRIES = {
+      "entry.511078072": "yes",
+      "entry.1652413056": "bruh"
+    };
+
+    // ISI NOMOR PESERTA 1–28
+    const pesertaSelect = document.getElementById("peserta");
+
+    for (let i = 1; i <= 28; i++) {
+      const option = document.createElement("option");
+      option.value = String(i);
+      option.textContent = `Peserta ${String(i).padStart(2, "0")}`;
+      pesertaSelect.appendChild(option);
+    }
+
+    // PILIHAN SKOR SIKAP
     let skorSikap = null;
 
     document.querySelectorAll(".choice").forEach(button => {
@@ -175,88 +291,89 @@
           item.classList.toggle("selected", item === button);
         });
 
-        hitung();
+        hitungNilai();
       });
     });
 
-    function hitung() {
-      const benarInput = document.getElementById("benar").value;
-      const benar = Number(benarInput);
-      const valid = benarInput !== "" &&
-        Number.isInteger(benar) && benar >= 0 && benar <= 20;
+    // KALKULASI NILAI
+    function hitungNilai() {
+      const input = document.getElementById("benar");
+      const raw = input.value;
+      const benar = Number(raw);
+
+      const valid =
+        raw !== "" &&
+        Number.isInteger(benar) &&
+        benar >= 0 &&
+        benar <= 20;
 
       document.getElementById("nilaiKetepatan").textContent =
-        valid ? (benar * 4).toFixed(0) : "—";
+        valid ? String(benar * 4) : "—";
 
       document.getElementById("nilaiSikap").textContent =
-        skorSikap === null ? "—" : skorSikap;
+        skorSikap === null ? "—" : String(skorSikap);
 
       document.getElementById("nilaiAkhir").textContent =
-        valid && skorSikap !== null ? benar * 4 + skorSikap : "—";
+        valid && skorSikap !== null
+          ? String(benar * 4 + skorSikap)
+          : "—";
     }
 
-    document.getElementById("benar").addEventListener("input", hitung);
+    document.getElementById("benar").addEventListener(
+      "input",
+      hitungNilai
+    );
 
+    // PENGIRIMAN FORM UJI
+    document.getElementById("simpan").addEventListener(
+      "click",
+      () => {
+        const button = document.getElementById("simpan");
+        const status = document.getElementById("status");
 
-const GOOGLE_FORM_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSe1qSFeu5SvMp6JdAMDk66kyAQmJtwdHMnywVaml42oQMkPBw/formResponse";
+        if (button.disabled) return;
 
-const TEST_ENTRIES = {
-  "entry.511078072": "yes",
-  "entry.1652413056": "bruh"
-};
+        let frame = document.getElementById("google-form-frame");
 
-document.getElementById("simpan").addEventListener("click", () => {
-  const status = document.getElementById("status");
-  const button = document.getElementById("simpan");
+        if (!frame) {
+          frame = document.createElement("iframe");
+          frame.id = "google-form-frame";
+          frame.name = "google-form-frame";
+          frame.style.display = "none";
+          document.body.appendChild(frame);
+        }
 
-  // Cegah klik berulang selama pengiriman
-  if (button.disabled) return;
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = GOOGLE_FORM_URL;
+        form.target = frame.name;
+        form.style.display = "none";
 
-  button.disabled = true;
-  button.textContent = "Mengirim...";
+        Object.entries(TEST_ENTRIES).forEach(([name, value]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = name;
+          input.value = value;
+          form.appendChild(input);
+        });
 
-  // Iframe tersembunyi untuk menerima respons lintas domain
-  let frame = document.getElementById("google-form-frame");
+        document.body.appendChild(form);
 
-  if (!frame) {
-    frame = document.createElement("iframe");
-    frame.id = "google-form-frame";
-    frame.name = "google-form-frame";
-    frame.style.display = "none";
-    document.body.appendChild(frame);
-  }
+        button.disabled = true;
+        button.textContent = "Mengirim...";
+        status.textContent =
+          "Permintaan pengiriman sedang dicoba. Periksa Responses Google Forms untuk memastikan data diterima.";
 
-  // Buat formulir pengiriman
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = GOOGLE_FORM_URL;
-  form.target = "google-form-frame";
-  form.style.display = "none";
+        form.submit();
+        form.remove();
 
-  Object.entries(TEST_ENTRIES).forEach(([name, value]) => {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = name;
-    input.value = value;
-    form.appendChild(input);
-  });
-
-  document.body.appendChild(form);
-  form.submit();
-  form.remove();
-
-  status.textContent =
-    "Permintaan uji sudah dikirim. Periksa tab Responses Google Forms untuk memastikan data diterima.";
-
-  // Pengiriman lintas domain tidak menyediakan konfirmasi
-  // keberhasilan yang dapat diandalkan di halaman ini.
-  setTimeout(() => {
-    button.disabled = false;
-    button.textContent = "Simpan nilai";
-  }, 3000);
-});
+        // Ini bukan konfirmasi bahwa Google telah menerima data.
+        setTimeout(() => {
+          button.disabled = false;
+          button.textContent = "Kirim data uji";
+        }, 3000);
+      }
+    );
   </script>
 </body>
 </html>
-
