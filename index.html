@@ -82,6 +82,35 @@
       border-color: var(--green);
     }
 
+    .regu-row {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+    }
+
+    .regu-field {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .clear-form {
+      min-height: 44px;
+      flex-shrink: 0;
+      padding: 0 11px;
+      border: 1px solid #f0b8b4;
+      border-radius: 9px;
+      background: #fff1f0;
+      color: var(--red);
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .clear-form:active {
+      background: #ffe0de;
+    }
+
     .section-title {
       display: flex;
       justify-content: space-between;
@@ -307,14 +336,21 @@
 
       <!-- IDENTITAS -->
       <section class="card">
-        <label for="regu">Nama regu</label>
-        <input
-          id="regu"
-          type="text"
-          placeholder="Contoh: Singa atau Singa (revisi)"
-          autocomplete="off"
-          required
-        >
+        <div class="regu-row">
+          <div class="regu-field">
+            <label for="regu">Nama regu</label>
+            <input
+              id="regu"
+              type="text"
+              placeholder="Contoh: Singa"
+              autocomplete="off"
+              required
+            >
+          </div>
+          <button class="clear-form" id="bersihkanForm" type="button">
+            Bersihkan form
+          </button>
+        </div>
         <input type="hidden" id="lomba" value="A1">
       </section>
 
@@ -481,6 +517,8 @@
 
     const form = document.getElementById("penilaianForm");
     const tombolKirim = document.getElementById("simpan");
+    const tombolBersihkan = document.getElementById("bersihkanForm");
+    const inputRegu = document.getElementById("regu");
     const status = document.getElementById("status");
 
     // ==========================================
@@ -716,6 +754,54 @@
 
       return total;
     }
+
+    // ==========================================
+    // BERSIHKAN FORM UNTUK REGU BERIKUTNYA
+    // ==========================================
+
+    tombolBersihkan.addEventListener("click", function() {
+      const yakin = window.confirm(
+        "Bersihkan semua isian penilaian di layar? Data yang sudah terkirim ke Google Forms tidak akan terhapus."
+      );
+
+      if (!yakin) return;
+
+      // Kosongkan nama regu dan seluruh checkbox.
+      inputRegu.value = "";
+      form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+      });
+
+      pelanggaranDipilih.clear();
+      perlengkapanDipilih.clear();
+
+      // Kembalikan semua nilai ke kondisi awal.
+      nilai.ketepatan = 25;
+      nilai.kelengkapan = 0;
+      nilai.kerapian = null;
+      nilai.sikap = null;
+      nilai.kompak = null;
+      nilai.bersih = null;
+
+      hitungKetepatan();
+      hitungKelengkapan();
+
+      // Perbarui tampilan bintang dan skor setiap kriteria.
+      document.querySelectorAll(".rating-row").forEach(row => {
+        const score = row.querySelector(".score");
+        const buttons = row.querySelectorAll(".star");
+        const maksimal = buttons.length - 1;
+        const nama = row.querySelector(".rating-name").textContent;
+        const nilaiPerBintang = nama === "Kerapian" ? 5 : 1;
+
+        buttons.forEach(button => button.classList.remove("selected"));
+        score.textContent = `—/${maksimal * nilaiPerBintang}`;
+      });
+
+      hitungTotal();
+      status.textContent = "Formulir sudah dibersihkan. Silakan masukkan nama regu berikutnya.";
+      inputRegu.focus();
+    });
 
     // ==========================================
     // KIRIM DATA KE GOOGLE FORMS
