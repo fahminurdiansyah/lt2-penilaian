@@ -1,1 +1,208 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173d2b">
+  <title>Penilaian LT II Regol 2026</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f5f2;
+      color: #202820;
+    }
+
+    header {
+      background: #173d2b;
+      color: white;
+      padding: 22px 18px;
+    }
+
+    header h1 { font-size: 21px; margin: 0 0 6px; }
+    header p { font-size: 14px; margin: 0; opacity: .85; }
+
+    main {
+      max-width: 520px;
+      margin: auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: white;
+      padding: 18px;
+      margin-bottom: 14px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px #0000000c;
+    }
+
+    label, .field-title {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    select, input {
+      width: 100%;
+      min-height: 50px;
+      padding: 12px;
+      border: 1px solid #cbd5cb;
+      border-radius: 10px;
+      font-size: 16px;
+      background: white;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    button.choice {
+      min-height: 60px;
+      border: 2px solid #d5ddd5;
+      border-radius: 12px;
+      background: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button.choice.selected {
+      background: #dcefe2;
+      border-color: #247443;
+      color: #173d2b;
+    }
+
+    .hint {
+      color: #667066;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .submit {
+      width: 100%;
+      min-height: 56px;
+      border: 0;
+      border-radius: 12px;
+      background: #173d2b;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    #status {
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Penilaian LT II</h1>
+    <p>Regol 2026 · Panel Penilaian Juri</p>
+  </header>
+
+  <main>
+    <div class="card">
+      <label for="lomba">Mata lomba</label>
+      <select id="lomba">
+        <option value="E2">E2 — KIM Lihat</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <label for="peserta">Nomor peserta</label>
+      <select id="peserta">
+        <option value="">Pilih nomor peserta</option>
+        <script>
+          for (let i = 1; i <= 28; i++) {
+            document.write(
+              `<option value="${i}">Peserta ${String(i).padStart(2, "0")}</option>`
+            );
+          }
+        </script>
+      </select>
+    </div>
+
+    <div class="card">
+      <label for="benar">Jumlah jawaban benar (0–20)</label>
+      <input id="benar" type="number" min="0" max="20"
+        inputmode="numeric" placeholder="Masukkan jumlah benar">
+    </div>
+
+    <div class="card">
+      <span class="field-title">Nilai sikap</span>
+      <div class="choices" id="sikap">
+        <button type="button" class="choice" data-score="5">5</button>
+        <button type="button" class="choice" data-score="10">10</button>
+        <button type="button" class="choice" data-score="15">15</button>
+        <button type="button" class="choice" data-score="20">20</button>
+      </div>
+      <p class="hint">
+        Contoh skala saja. Indikator sikap perlu disepakati panitia.
+      </p>
+    </div>
+
+    <div class="card">
+      <span class="field-title">Pratinjau nilai</span>
+      <p>Ketepatan: <strong id="nilaiKetepatan">—</strong></p>
+      <p>Nilai sikap: <strong id="nilaiSikap">—</strong></p>
+      <p>Nilai akhir: <strong id="nilaiAkhir">—</strong></p>
+      <p class="hint">
+        Perhitungan contoh: ketepatan maksimal 80 poin,
+        sikap maksimal 20 poin.
+      </p>
+    </div>
+
+    <button class="submit" id="simpan" type="button">
+      Simpan nilai
+    </button>
+    <p id="status" role="status"></p>
+  </main>
+
+  <script>
+    let skorSikap = null;
+
+    document.querySelectorAll(".choice").forEach(button => {
+      button.addEventListener("click", () => {
+        skorSikap = Number(button.dataset.score);
+
+        document.querySelectorAll(".choice").forEach(item => {
+          item.classList.toggle("selected", item === button);
+        });
+
+        hitung();
+      });
+    });
+
+    function hitung() {
+      const benarInput = document.getElementById("benar").value;
+      const benar = Number(benarInput);
+      const valid = benarInput !== "" &&
+        Number.isInteger(benar) && benar >= 0 && benar <= 20;
+
+      document.getElementById("nilaiKetepatan").textContent =
+        valid ? (benar * 4).toFixed(0) : "—";
+
+      document.getElementById("nilaiSikap").textContent =
+        skorSikap === null ? "—" : skorSikap;
+
+      document.getElementById("nilaiAkhir").textContent =
+        valid && skorSikap !== null ? benar * 4 + skorSikap : "—";
+    }
+
+    document.getElementById("benar").addEventListener("input", hitung);
+
+    document.getElementById("simpan").addEventListener("click", () => {
+      document.getElementById("status").textContent =
+        "Prototipe saja: nilai belum dikirim atau disimpan. " +
+        "Integrasi Google Forms belum diaktifkan.";
+    });
+  </script>
+</body>
+</html>
+
