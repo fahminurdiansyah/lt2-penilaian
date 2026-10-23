@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#173d2b">
-  <title>Uji Koneksi Google Forms</title>
+  <title>Penilaian A1 - LT II Regol 2026</title>
 
   <style>
     :root {
@@ -15,11 +15,10 @@
       --border: #d5ddd5;
       --text: #202820;
       --muted: #657166;
+      --gold: #d99b19;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -31,74 +30,218 @@
     header {
       background: var(--green);
       color: white;
-      padding: 24px 18px;
+      padding: 13px 16px;
     }
 
     header h1 {
-      margin: 0 0 7px;
-      font-size: 22px;
+      margin: 0 0 3px;
+      font-size: 20px;
     }
 
     header p {
       margin: 0;
-      font-size: 14px;
+      font-size: 12px;
       opacity: .85;
     }
 
     main {
-      max-width: 520px;
+      max-width: 560px;
       margin: auto;
-      padding: 16px;
+      padding: 10px;
     }
 
     .card {
       background: white;
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 14px;
-      box-shadow: 0 2px 8px #0000000c;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    input {
-      display: block;
-      width: 100%;
-      min-height: 52px;
+      border-radius: 12px;
       padding: 12px;
+      margin-bottom: 9px;
+      box-shadow: 0 2px 7px #0000000a;
+    }
+
+    .identity {
+      display: grid;
+      grid-template-columns: 85px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    label, .section-title {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    select, input {
+      width: 100%;
+      min-height: 44px;
+      padding: 9px;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      font-size: 16px;
+      border-radius: 9px;
       background: white;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 9px;
+    }
+
+    .section-title small {
+      font-size: 11px;
+      font-weight: normal;
+      color: var(--muted);
+    }
+
+    .criteria {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .criterion {
+      border: 1px solid #e5eae5;
+      border-radius: 10px;
+      padding: 9px;
+    }
+
+    .criterion-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+    }
+
+    .criterion-name {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .score-label {
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--green);
+      white-space: nowrap;
+    }
+
+    .number-buttons {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .number-button {
+      min-width: 0;
+      min-height: 39px;
+      padding: 5px 1px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .number-button.selected {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    .character-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .character-card {
+      min-width: 0;
+      border: 1px solid #e5eae5;
+      border-radius: 10px;
+      padding: 9px;
+    }
+
+    .character-card .criterion-head {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .star-buttons {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 3px;
+    }
+
+    .star-button {
+      min-width: 0;
+      min-height: 34px;
+      padding: 3px 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: white;
+      color: #a6ada6;
+      font-size: 18px;
+    }
+
+    .star-button.selected {
+      color: var(--gold);
+      background: #fff6df;
+      border-color: var(--gold);
+    }
+
+    .star-button.zero {
+      font-size: 12px;
+      font-weight: bold;
       color: var(--text);
     }
 
-    input:focus {
-      outline: 2px solid var(--green-light);
+    .star-button.zero.selected {
+      background: var(--green);
+      color: white;
       border-color: var(--green);
     }
 
-    .hint {
-      color: var(--muted);
-      font-size: 13px;
+    .total-card {
+      background: var(--green);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .total-label {
+      font-size: 14px;
       line-height: 1.5;
+    }
+
+    .total-number {
+      font-size: 30px;
+      font-weight: bold;
+      white-space: nowrap;
     }
 
     .submit {
       width: 100%;
-      min-height: 58px;
+      min-height: 50px;
       border: 0;
-      border-radius: 12px;
+      border-radius: 10px;
       background: var(--green);
       color: white;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: bold;
-      cursor: pointer;
-      touch-action: manipulation;
     }
 
     .submit:disabled {
@@ -107,128 +250,113 @@
     }
 
     #status {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 14px;
+      margin: 8px 0 0;
+      padding: 9px;
+      border-radius: 8px;
+      background: #f5f7f5;
+      font-size: 12px;
       line-height: 1.5;
       overflow-wrap: anywhere;
     }
 
-    footer {
-      text-align: center;
-      padding: 8px 16px 24px;
+    .hint {
+      margin: 6px 0 0;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    footer {
+      padding: 4px 12px 12px;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    @media (min-width: 480px) {
+      .criteria {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 360px) {
+      main { padding: 7px; }
+      .card { padding: 9px; }
+      .number-buttons { gap: 3px; }
+      .number-button { font-size: 12px; }
+      .character-card { padding: 6px; }
+      .star-button { font-size: 16px; }
     }
   </style>
 </head>
 
 <body>
   <header>
-    <h1>Uji Koneksi Google Forms</h1>
-    <p>LT II Regol 2026 · Formulir Percobaan</p>
+    <h1>Penilaian LT II — A1</h1>
+    <p>Regol 2026 · Panel Penilaian Juri</p>
   </header>
 
   <main>
-    <form id="ujiForm">
-
-      <section class="card">
-        <label for="lomba">Mata Lomba</label>
-        <input
-          id="lomba"
-          type="text"
-          placeholder="Contoh: E2"
-          required
-        >
+    <form id="penilaianForm">
+      <section class="card identity">
+        <div>
+          <label for="lomba">Mata lomba</label>
+          <input id="lomba" value="A1" readonly>
+        </div>
+        <div>
+          <label for="peserta">Nomor peserta</label>
+          <select id="peserta" required>
+            <option value="">Pilih peserta</option>
+          </select>
+        </div>
       </section>
 
       <section class="card">
-        <label for="peserta">Nomor Peserta</label>
-        <input
-          id="peserta"
-          type="number"
-          min="1"
-          max="28"
-          step="1"
-          placeholder="Contoh: 7"
-          required
-        >
+        <div class="section-title">
+          <span>Nilai utama</span>
+          <small>Maksimal 75 poin</small>
+        </div>
+        <div id="nilaiUtama" class="criteria"></div>
       </section>
 
       <section class="card">
-        <label for="benar">Jumlah Jawaban Benar</label>
-        <input
-          id="benar"
-          type="number"
-          min="0"
-          step="1"
-          placeholder="Contoh: 15"
-          required
-        >
+        <div class="section-title">
+          <span>Karakter / bonus</span>
+          <small>Maksimal 25 poin</small>
+        </div>
+        <div id="nilaiKarakter" class="character-grid"></div>
+        <p class="hint">
+          Pilih bintang sesuai nilai. Tombol 0 digunakan jika kriteria
+          tidak mendapatkan poin.
+        </p>
       </section>
 
-      <section class="card">
-        <label for="ketepatan">Nilai Ketepatan</label>
-        <input
-          id="ketepatan"
-          type="number"
-          min="0"
-          step="any"
-          placeholder="Contoh: 60"
-          required
-        >
-      </section>
-
-      <section class="card">
-        <label for="sikap">Nilai Sikap</label>
-        <input
-          id="sikap"
-          type="number"
-          min="0"
-          step="any"
-          placeholder="Contoh: 20"
-          required
-        >
-      </section>
-
-      <section class="card">
-        <label for="akhir">Nilai Akhir</label>
-        <input
-          id="akhir"
-          type="number"
-          min="0"
-          step="any"
-          placeholder="Contoh: 80"
-          required
-        >
+      <section class="card total-card">
+        <div class="total-label">
+          <strong>Nilai akhir</strong><br>
+          Utama + karakter
+        </div>
+        <div class="total-number"><span id="total">0</span><small style="font-size:15px">/100</small></div>
       </section>
 
       <section class="card">
         <button class="submit" id="simpan" type="submit">
-          Kirim Data
+          Kirim Data Penilaian
         </button>
-
         <p id="status" role="status" aria-live="polite">
-          Belum ada pengiriman.
+          Pilih peserta dan tentukan semua nilai sebelum mengirim.
         </p>
-
         <p class="hint">
-          Setelah mengirim, periksa tab Respons Google Forms
-          untuk memastikan data benar-benar diterima.
+          Periksa Respons Google Forms untuk memastikan data sudah masuk.
         </p>
       </section>
-
     </form>
   </main>
 
-  <footer>
-    Prototipe LT II Regol 2026
-  </footer>
+  <footer>Prototipe LT II Regol 2026</footer>
 
   <script>
-    // URL GOOGLE FORM UJI
+    // GOOGLE FORM
     const GOOGLE_FORM_URL =
       "https://docs.google.com/forms/d/e/1FAIpQLSe1qSFeu5SvMp6JdAMDk66kyAQmJtwdHMnywVaml42oQMkPBw/formResponse";
 
@@ -236,90 +364,259 @@
     const ENTRY = {
       lomba: "entry.511078072",
       peserta: "entry.1652413056",
-      benar: "entry.1102203745",
-      ketepatan: "entry.308553817",
-      sikap: "entry.473179287",
-      akhir: "entry.646836897"
+      ketepatan: "entry.1102203745",
+      kelengkapan: "entry.308553817",
+      kerapian: "entry.473179287",
+      sikap: "entry.646836897",
+      kompak: "entry.1748328363",
+      bersih: "entry.1374223098"
     };
 
-    const formUji = document.getElementById("ujiForm");
-    const tombol = document.getElementById("simpan");
+    // BOBOT MAKSIMAL SETIAP KRITERIA
+    const KRITERIA_UTAMA = [
+      { id: "ketepatan", label: "Ketepatan", max: 25 },
+      { id: "kelengkapan", label: "Kelengkapan", max: 25 },
+      { id: "kerapian", label: "Kerapian", max: 25 }
+    ];
+
+    const KRITERIA_KARAKTER = [
+      { id: "sikap", label: "Sikap", max: 5 },
+      { id: "kompak", label: "Kompak", max: 10 },
+      { id: "bersih", label: "Kebersihan", max: 10 }
+    ];
+
+    const nilai = {
+      ketepatan: null,
+      kelengkapan: null,
+      kerapian: null,
+      sikap: null,
+      kompak: null,
+      bersih: null
+    };
+
+    const pesertaSelect = document.getElementById("peserta");
+
+    for (let i = 1; i <= 28; i++) {
+      const option = document.createElement("option");
+      option.value = String(i);
+      option.textContent = `Peserta ${String(i).padStart(2, "0")}`;
+      pesertaSelect.appendChild(option);
+    }
+
+    function buatTombolAngka(kriteria) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "criterion";
+
+      const head = document.createElement("div");
+      head.className = "criterion-head";
+
+      const name = document.createElement("span");
+      name.className = "criterion-name";
+      name.textContent = kriteria.label;
+
+      const score = document.createElement("span");
+      score.className = "score-label";
+      score.id = `score-${kriteria.id}`;
+      score.textContent = `— / ${kriteria.max}`;
+
+      head.append(name, score);
+
+      const buttons = document.createElement("div");
+      buttons.className = "number-buttons";
+
+      for (let v = 0; v <= kriteria.max; v += 5) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "number-button";
+        button.textContent = v;
+        button.setAttribute("aria-label", `${kriteria.label}: ${v}`);
+
+        button.addEventListener("click", () => {
+          nilai[kriteria.id] = v;
+
+          buttons.querySelectorAll("button").forEach(b => {
+            b.classList.toggle("selected", b === button);
+          });
+
+          score.textContent = `${v} / ${kriteria.max}`;
+          hitungTotal();
+        });
+
+        buttons.appendChild(button);
+      }
+
+      wrapper.append(head, buttons);
+      return wrapper;
+    }
+
+    function buatTombolBintang(kriteria) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "character-card";
+
+      const head = document.createElement("div");
+      head.className = "criterion-head";
+
+      const name = document.createElement("span");
+      name.className = "criterion-name";
+      name.textContent = kriteria.label;
+
+      const score = document.createElement("span");
+      score.className = "score-label";
+      score.id = `score-${kriteria.id}`;
+      score.textContent = `— / ${kriteria.max}`;
+
+      head.append(name, score);
+
+      const buttons = document.createElement("div");
+      buttons.className = "star-buttons";
+
+      // Pilihan nol agar juri dapat memberi nilai 0.
+      const zero = document.createElement("button");
+      zero.type = "button";
+      zero.className = "star-button zero";
+      zero.textContent = "0";
+      zero.setAttribute("aria-label", `${kriteria.label}: 0`);
+
+      zero.addEventListener("click", () => {
+        nilai[kriteria.id] = 0;
+        perbaruiPilihan();
+        score.textContent = `0 / ${kriteria.max}`;
+        hitungTotal();
+      });
+
+      buttons.appendChild(zero);
+
+      function perbaruiPilihan() {
+        buttons.querySelectorAll("button").forEach(button => {
+          const v = Number(button.dataset.value);
+          button.classList.toggle(
+            "selected",
+            nilai[kriteria.id] !== null &&
+            (button.classList.contains("zero")
+              ? nilai[kriteria.id] === 0
+              : v <= nilai[kriteria.id])
+          );
+        });
+      }
+
+      for (let v = 1; v <= kriteria.max; v++) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "star-button";
+        button.textContent = "★";
+        button.dataset.value = String(v);
+        button.setAttribute("aria-label", `${kriteria.label}: ${v}`);
+
+        button.addEventListener("click", () => {
+          nilai[kriteria.id] = v;
+          perbaruiPilihan();
+          score.textContent = `${v} / ${kriteria.max}`;
+          hitungTotal();
+        });
+
+        buttons.appendChild(button);
+      }
+
+      wrapper.append(head, buttons);
+      return wrapper;
+    }
+
+    KRITERIA_UTAMA.forEach(kriteria => {
+      document.getElementById("nilaiUtama")
+        .appendChild(buatTombolAngka(kriteria));
+    });
+
+    KRITERIA_KARAKTER.forEach(kriteria => {
+      document.getElementById("nilaiKarakter")
+        .appendChild(buatTombolBintang(kriteria));
+    });
+
+    function hitungTotal() {
+      const total = Object.values(nilai).reduce(
+        (sum, value) => sum + (value ?? 0),
+        0
+      );
+
+      document.getElementById("total").textContent = total;
+      return total;
+    }
+
+    const form = document.getElementById("penilaianForm");
+    const tombolKirim = document.getElementById("simpan");
     const status = document.getElementById("status");
 
-    formUji.addEventListener("submit", function(event) {
+    form.addEventListener("submit", function(event) {
       event.preventDefault();
 
-      if (tombol.disabled) return;
+      if (tombolKirim.disabled) return;
 
-      // AMBIL NILAI DARI ENAM KOLOM
-      const dataNilai = {
-        lomba: document.getElementById("lomba").value.trim(),
-        peserta: document.getElementById("peserta").value.trim(),
-        benar: document.getElementById("benar").value.trim(),
-        ketepatan: document.getElementById("ketepatan").value.trim(),
-        sikap: document.getElementById("sikap").value.trim(),
-        akhir: document.getElementById("akhir").value.trim()
-      };
+      const peserta = pesertaSelect.value;
 
-      // PASTIKAN SEMUA KOLOM TERISI
-      if (Object.values(dataNilai).some(nilai => nilai === "")) {
-        status.textContent =
-          "Semua kolom wajib diisi sebelum mengirim.";
+      if (!peserta) {
+        status.textContent = "Silakan pilih nomor peserta.";
+        pesertaSelect.focus();
         return;
       }
 
-      // PETAKAN NILAI KE ID GOOGLE FORMS
+      const belumDinilai = Object.entries(nilai)
+        .filter(([, value]) => value === null)
+        .map(([id]) => id);
+
+      if (belumDinilai.length > 0) {
+        status.textContent =
+          "Pilih nilai untuk semua kriteria sebelum mengirim.";
+        return;
+      }
+
       const dataKirim = {
-        [ENTRY.lomba]: dataNilai.lomba,
-        [ENTRY.peserta]: dataNilai.peserta,
-        [ENTRY.benar]: dataNilai.benar,
-        [ENTRY.ketepatan]: dataNilai.ketepatan,
-        [ENTRY.sikap]: dataNilai.sikap,
-        [ENTRY.akhir]: dataNilai.akhir
+        [ENTRY.lomba]: "A1",
+        [ENTRY.peserta]: peserta,
+        [ENTRY.ketepatan]: String(nilai.ketepatan),
+        [ENTRY.kelengkapan]: String(nilai.kelengkapan),
+        [ENTRY.kerapian]: String(nilai.kerapian),
+        [ENTRY.sikap]: String(nilai.sikap),
+        [ENTRY.kompak]: String(nilai.kompak),
+        [ENTRY.bersih]: String(nilai.bersih)
       };
 
-      // SIAPKAN IFRAME TERSEMBUNYI
       let frame = document.getElementById("google-form-frame");
 
       if (!frame) {
         frame = document.createElement("iframe");
         frame.id = "google-form-frame";
         frame.name = "google-form-frame";
-        frame.style.display = "none";
         frame.title = "Pengiriman Google Forms";
+        frame.style.display = "none";
         document.body.appendChild(frame);
       }
 
-      // BUAT FORM PENGIRIMAN
       const formKirim = document.createElement("form");
       formKirim.method = "POST";
       formKirim.action = GOOGLE_FORM_URL;
       formKirim.target = frame.name;
       formKirim.style.display = "none";
 
-      Object.entries(dataKirim).forEach(([nama, nilai]) => {
+      Object.entries(dataKirim).forEach(([name, value]) => {
         const input = document.createElement("input");
         input.type = "hidden";
-        input.name = nama;
-        input.value = nilai;
+        input.name = name;
+        input.value = value;
         formKirim.appendChild(input);
       });
 
       document.body.appendChild(formKirim);
 
-      tombol.disabled = true;
-      tombol.textContent = "Mengirim...";
+      tombolKirim.disabled = true;
+      tombolKirim.textContent = "Mengirim...";
       status.textContent =
-        "Permintaan pengiriman sedang dicoba. Periksa Respons Google Forms untuk memastikan data masuk.";
+        "Permintaan pengiriman dicoba. Periksa Respons Google Forms untuk memastikan data diterima.";
 
       formKirim.submit();
       formKirim.remove();
 
-      // AKTIFKAN KEMBALI TOMBOL
-      // Ini bukan konfirmasi penerimaan dari Google Forms.
       setTimeout(() => {
-        tombol.disabled = false;
-        tombol.textContent = "Kirim Data";
+        tombolKirim.disabled = false;
+        tombolKirim.textContent = "Kirim Data Penilaian";
       }, 3000);
     });
   </script>
